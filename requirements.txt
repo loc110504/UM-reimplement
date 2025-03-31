@@ -8,3 +8,8 @@ scikit-learn
 scikit-image
 einops
 h5py
+pillow
+numpy
+ipykernel
+matplotlib
+seaborn

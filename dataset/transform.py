@@ -1,5 +1,4 @@
 import random
-
 import numpy as np
 from PIL import Image, ImageOps, ImageFilter
 import torch
@@ -21,13 +20,11 @@ def crop(img, mask, size, ignore_value=255):
 
     return img, mask
 
-
 def hflip(img, mask, p=0.5):
     if random.random() < p:
         img = img.transpose(Image.FLIP_LEFT_RIGHT)
         mask = mask.transpose(Image.FLIP_LEFT_RIGHT)
     return img, mask
-
 
 def normalize(img, mask=None):
     img = transforms.Compose([
@@ -38,7 +35,6 @@ def normalize(img, mask=None):
         mask = torch.from_numpy(np.array(mask)).long()
         return img, mask
     return img
-
 
 def resize(img, mask, ratio_range):
     w, h = img.size
@@ -55,13 +51,11 @@ def resize(img, mask, ratio_range):
     mask = mask.resize((ow, oh), Image.NEAREST)
     return img, mask
 
-
 def blur(img, p=0.5):
     if random.random() < p:
         sigma = np.random.uniform(0.1, 2.0)
         img = img.filter(ImageFilter.GaussianBlur(radius=sigma))
     return img
-
 
 def obtain_cutmix_box(img_size, p=0.5, size_min=0.02, size_max=0.4, ratio_1=0.3, ratio_2=1/0.3):
     mask = torch.zeros(img_size, img_size)

@@ -16,12 +16,13 @@ class SemiDataset(Dataset):
     def __init__(self, name, root, mode, size=None, id_path=None, nsample=None):
         self.name = name
         self.root = root
-        self.mode = mode
-        self.size = size
+        self.mode = mode # train_l, train_u, val
+        self.size = size # kích thước crop (augmentation)
 
         if mode == 'train_l' or mode == 'train_u':
             with open(id_path, 'r') as f:
                 self.ids = f.read().splitlines()
+            # nsample: số lượng ảnh muốn lấy trong tập train_l    
             if mode == 'train_l' and nsample is not None:
                 self.ids *= math.ceil(nsample / len(self.ids))
                 self.ids = self.ids[:nsample]

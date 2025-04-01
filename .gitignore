@@ -1,2 +1,5 @@
 pascal_data/
 pretrained/
+__pycache__/
+**/__pycache__/
+*.py[cod]

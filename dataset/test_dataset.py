@@ -4,11 +4,11 @@ from semi import SemiDataset
 from transform import normalize, resize, crop, hflip, blur, obtain_cutmix_box
 
 if __name__ == '__main__':
-    root_dir = '../pascal_data'
+    root_dir = 'pascal_data'
 
     # Khởi tạo dataset cho tập unlabeled và labeled
-    trainset_u = SemiDataset('pascal', root_dir, 'train_u', 321, '../splits/pascal/1464/unlabeled.txt')
-    trainset_l = SemiDataset('pascal', root_dir, 'train_l', 321, './splits/pascal/1464/labeled.txt', 1464)
+    trainset_u = SemiDataset('pascal', root_dir, 'train_u', 321, 'splits/pascal/1464/unlabeled.txt')
+    trainset_l = SemiDataset('pascal', root_dir, 'train_l', 321, 'splits/pascal/1464/labeled.txt', 1464)
 
     # Tạo DataLoader cho mỗi dataset
     dataloader_u = DataLoader(trainset_u, batch_size=4, shuffle=True, num_workers=0)

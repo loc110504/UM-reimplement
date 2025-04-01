@@ -32,9 +32,16 @@ class SemiDataset(Dataset):
 
     def __getitem__(self, item):
         id = self.ids[item]
-        img = Image.open(os.path.join(self.root, id.split(' ')[0])).convert('RGB')
-        mask = Image.fromarray(np.array(Image.open(os.path.join(self.root, id.split(' ')[1]))))
-
+        img_path, mask_path = id.split(' ')
+        img = Image.open(os.path.join(self.root, img_path)).convert('RGB')
+        
+        # Nếu là unlabeled, tạo dummy mask; còn lại (train_l, val) mở file mask như cũ.
+        if self.mode == 'train_u':
+            # Tạo mask giả với cùng kích thước ảnh, giá trị 0
+            mask = Image.new('L', img.size, 0)
+        else:
+            mask = Image.fromarray(np.array(Image.open(os.path.join(self.root, mask_path))))
+        
         if self.mode == 'val':
             img, mask = normalize(img, mask)
             return img, mask, id

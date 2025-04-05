@@ -13,3 +13,6 @@ numpy
 ipykernel
 matplotlib
 seaborn
+segmentation_models_pytorch
+torch
+torchvision

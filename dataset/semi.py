@@ -1,4 +1,4 @@
-from dataset.transform import *
+from transform import *
 
 from copy import deepcopy
 import math
@@ -31,16 +31,31 @@ class SemiDataset(Dataset):
                 self.ids = f.read().splitlines()
 
     def __getitem__(self, item):
-        id = self.ids[item]
-        img_path, mask_path = id.split(' ')
-        img = Image.open(os.path.join(self.root, img_path)).convert('RGB')
+        id_line = self.ids[item]
+        parts = id_line.split(' ')
+        # Giả sử format: "JPEGImages/xxxx.jpg SegmentationClass/xxxx.png"
+        img_path = os.path.join(self.root, parts[0])
+        mask_path = os.path.join(self.root, parts[1]) if len(parts) > 1 else None
         
-        # Nếu là unlabeled, tạo dummy mask; còn lại (train_l, val) mở file mask như cũ.
-        if self.mode == 'train_u':
-            # Tạo mask giả với cùng kích thước ảnh, giá trị 0
-            mask = Image.new('L', img.size, 0)
+        try:
+            # Đọc ảnh
+            img = Image.open(img_path).convert('RGB')
+        except FileNotFoundError:
+            raise FileNotFoundError(
+                f"[{self.mode} DATASET] Không tìm thấy file ảnh: {img_path}"
+            )
+
+        # Nếu là 'val' hoặc 'train_l', phải đọc mask
+        if self.mode != 'train_u':
+            try:
+                mask = Image.open(mask_path)
+            except FileNotFoundError:
+                raise FileNotFoundError(
+                    f"[{self.mode} DATASET] Không tìm thấy file mask: {mask_path}"
+                )
         else:
-            mask = Image.fromarray(np.array(Image.open(os.path.join(self.root, mask_path))))
+            # Unlabeled: mask giả (dummy mask) 
+            mask = Image.new('L', img.size, color=0)
         
         if self.mode == 'val':
             img, mask = normalize(img, mask)
